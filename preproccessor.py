@@ -2,6 +2,9 @@
 from datetime import datetime
 import pandas as pd
 
+import warnings
+warnings.filterwarnings('ignore')
+
 
 class Preprocessor:
     """Предобработчик данных"""
@@ -17,6 +20,7 @@ class Preprocessor:
 
         # Правила агрегации признаков (имя признака : агрегация)
         self.aggs = {
+            'remote_addr': 'unique',
             'page': list,
             'http_referer': 'unique',
             'access.status': 'unique',
@@ -27,13 +31,15 @@ class Preprocessor:
         }
 
         # Имена признаков, которые будут отброшены после постобработки
-        self.columns_to_drop = ['session',
-                                'time_round',
-                                'page',
-                                'http_referer',
-                                'access.status',
-                                'access.request',
-                                'metrik.action']
+        self.columns_to_drop = [
+            'remote_addr',
+            'session',
+            'time_round',
+            'page',
+            'http_referer',
+            'access.status',
+            'access.request',
+            'metrik.action']
 
         self.last_predicts_timestampts = {}
 
@@ -101,13 +107,14 @@ class Preprocessor:
         dataframe['was_action_click'] = dataframe['metrik.action'].apply(lambda x: int(
             'click' in x))  # флаг наличия действия click в metrik.action
 
+        ip_addrs = [remote_addr[0] for remote_addr in dataframe['remote_addr'].values]
         dataframe.drop(self.columns_to_drop, axis=1, inplace=True)
-        return dataframe
+        return dataframe, ip_addrs
 
     def proccess_data(self, file):
         """Запускает процесс обработки данных"""
 
         dataframe = self.__read_data__(file)
         dataframe = self.__preproccess_data__(dataframe)
-        dataframe = self.__postproccess_data__(dataframe)
-        return dataframe
+        dataframe, ip_addrs = self.__postproccess_data__(dataframe)
+        return dataframe, ip_addrs
