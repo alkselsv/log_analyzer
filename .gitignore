@@ -165,7 +165,5 @@ cython_debug/
 # macOS
 .DS_Store
 
-users/
-
-# macOS
-.DS_Store
+# project
+users
