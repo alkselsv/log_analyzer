@@ -24,10 +24,13 @@ class Predictor:
 
         while True:
 
-            data, ip_addrs = self.preproccessor.proccess_data(
+            data, timestamps, ip_addrs, sessions, user_agents = self.preproccessor.proccess_data(
                 log_file)
-            df_out = pd.DataFrame(columns=["ip_addr", "prob"])
+            df_out = pd.DataFrame(columns=["timestamp", "ip_addr", "prob", "session"])
+            df_out["timestamp"] = timestamps
             df_out["ip_addr"] = ip_addrs
+            df_out["session"] = sessions
+            df_out["user_agent"] = user_agents
             print(len(data))
 
             if model is not None and len(data):

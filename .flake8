@@ -1,0 +1,13 @@
+[flake8]
+exclude = 
+    .git
+    .pytest_cache
+    .vscode
+    migrations
+    venv
+    .tox
+    __pycache__
+    */constants.py
+max-line-length = 90
+ignore = E203, E266, W503
+max-complexity = 18
