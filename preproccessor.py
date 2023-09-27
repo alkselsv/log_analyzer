@@ -23,6 +23,7 @@ class Preprocessor:
             'remote_addr': 'unique',
             'page': list,
             'http_referer': 'unique',
+            'http_user_agent': 'unique',
             'access.status': 'unique',
             'access.request_time': 'mean',
             'access.bytes_sent': 'sum',
@@ -37,6 +38,7 @@ class Preprocessor:
             'time_round',
             'page',
             'http_referer',
+            'http_user_agent',
             'access.status',
             'access.request',
             'metrik.action']
@@ -107,14 +109,19 @@ class Preprocessor:
         dataframe['was_action_click'] = dataframe['metrik.action'].apply(lambda x: int(
             'click' in x))  # флаг наличия действия click в metrik.action
 
+        timestamps = dataframe['time_round'].values
         ip_addrs = [remote_addr[0] for remote_addr in dataframe['remote_addr'].values]
+        sessions = dataframe['session'].values
+        user_agents = [user_agent[0]
+                       for user_agent in dataframe['http_user_agent'].values]
         dataframe.drop(self.columns_to_drop, axis=1, inplace=True)
-        return dataframe, ip_addrs
+        return dataframe, timestamps, ip_addrs, sessions, user_agents
 
     def proccess_data(self, file):
         """Запускает процесс обработки данных"""
 
         dataframe = self.__read_data__(file)
         dataframe = self.__preproccess_data__(dataframe)
-        dataframe, ip_addrs = self.__postproccess_data__(dataframe)
-        return dataframe, ip_addrs
+        dataframe, timestamps, ip_addrs, sessions, user_agents = self.__postproccess_data__(
+            dataframe)
+        return dataframe, timestamps, ip_addrs, sessions, user_agents
