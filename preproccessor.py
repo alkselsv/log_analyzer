@@ -54,12 +54,11 @@ class Preprocessor:
                                 on_bad_lines="skip")
         timestamp = self.last_predicts_timestampts.get(file, datetime(2023, 1, 1))
         dataframe['datetime'] = pd.to_datetime(dataframe['date'])
-        dataframe = dataframe[dataframe['datetime']
-                              > timestamp]  # Оставляет только новые данные
+        dataframe = dataframe[(dataframe['datetime']
+                              > timestamp) & (dataframe['type'] == 'METRIK')]  # Оставляет только новые данные
         # Сохраняет метку даты последней строки
         if len(dataframe):
             self.last_predicts_timestampts[file] = dataframe.iloc[-1]['datetime'].to_pydatetime()
-
         return dataframe
 
     def __make_group__(self, dataframe):
