@@ -34,7 +34,8 @@ class Predictor:
             print(len(data))
 
             if model is not None and len(data):
-                predictions = model.predict_proba(data)[:, 1]
+                predictions = [
+                    int(y) for y in model.predict_proba(data)[:, 1] > 0.004]
                 df_out["prob"] = np.round(predictions, 2)
 
                 # Для тестирования
