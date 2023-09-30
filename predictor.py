@@ -70,6 +70,6 @@ class Predictor:
         log_files = self.scanner.get_log_files()
         min_bounds = self.scanner.get_min_bounds()
 
-        pool = mp.Pool(mp.cpu_count())
+        pool = mp.Pool(len(log_files))  # число процессов = число файлов с логами
         pool.map(self.__worker__, zip(models_names, log_files, min_bounds))
         pool.close()
