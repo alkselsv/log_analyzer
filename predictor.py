@@ -11,10 +11,10 @@ import pandas as pd
 class Predictor:
     """Возвращает предсказания модели"""
 
-    def __init__(self, scanner, preproccessor, model_dir="models"):
+    def __init__(self, scanner, preproccessor, models_dir="models"):
         self.scanner = scanner
         self.preproccessor = preproccessor
-        self.model_dir = model_dir
+        self.models_dir = models_dir
 
     def __predict__(self, model, log_file, min_bound):
         """Выполняет предсказание"""
@@ -58,7 +58,7 @@ class Predictor:
         """Вспомогательная функция, которая разбирает аргументы"""
 
         model_name, log_file, min_bound = args
-        model_path = os.path.join(self.model_dir, model_name + ".pkl")
+        model_path = os.path.join(self.models_dir, model_name + ".pkl")
         with open(model_path, "rb") as file:
             model = pickle.load(file)
         return self.__predict__(model, log_file, min_bound)
