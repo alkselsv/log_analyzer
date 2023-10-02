@@ -12,8 +12,9 @@ from logger import init_stream_logger
 class Predictor:
     """Возвращает предсказания модели"""
 
-    def __init__(self, scanner=None, preproccessor=None, models_dir="models",
-                 logger=None):
+    def __init__(
+        self, scanner=None, preproccessor=None, models_dir="models", logger=None
+    ):
         self.scanner = scanner
         self.preproccessor = preproccessor
         self.models_dir = models_dir
@@ -23,9 +24,13 @@ class Predictor:
         """Выполняет предсказание"""
 
         while True:
-
-            data, timestamps, ip_addrs, sessions, user_agents = self.preproccessor.proccess_data(
-                log_file)
+            (
+                data,
+                timestamps,
+                ip_addrs,
+                sessions,
+                user_agents,
+            ) = self.preproccessor.proccess_data(log_file)
             df_out = pd.DataFrame(columns=["timestamp", "ip_addr", "prob", "session"])
             df_out["timestamp"] = timestamps
             df_out["ip_addr"] = ip_addrs
@@ -51,10 +56,10 @@ class Predictor:
                 self.logger.debug(f"Prediction results: {len(df_out_filtered )}")
 
                 if len(df_out_filtered) > 0:
-                    out_file = os.path.join(
-                        os.path.dirname(log_file), "out.csv.log"
+                    out_file = os.path.join(os.path.dirname(log_file), "out.csv.log")
+                    df_out_filtered.to_csv(
+                        out_file, mode="a", index=False, header=False
                     )
-                    df_out_filtered.to_csv(out_file, mode='a', index=False, header=False)
 
             time.sleep(20)
 

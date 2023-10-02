@@ -25,11 +25,12 @@ class LogScanner:
                     if os.path.isdir(site_dir):
                         settings_file = os.path.join(site_dir, "settings.json")
                         if os.path.isfile(settings_file):
-                            with open(settings_file, 'r', encoding="utf8") as file:
+                            with open(settings_file, "r", encoding="utf8") as file:
                                 settings = json.load(file)
                                 self.models.append(settings.get("model"))
                                 self.min_bounds.append(
-                                    settings.get("min_bound_per") / 100)
+                                    settings.get("min_bound_per") / 100
+                                )
                         log_file = os.path.join(site_dir, "logs", "sp.csv.log")
                         if os.path.isfile(log_file):
                             self.log_files.append(log_file)

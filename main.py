@@ -6,14 +6,18 @@ from preproccessor import Preprocessor
 from predictor import Predictor
 
 
-if __name__ == '__main__':
-
+if __name__ == "__main__":
     # Парсинг аргументов командной строки
-    parser = argparse.ArgumentParser(description='Log monitoring and processing')
-    parser.add_argument('--root_dir', type=str, default="users",
-                        help='Path to the root dir')
-    parser.add_argument('--models_dir', type=str, default="models",
-                        help='Path to the classification models')
+    parser = argparse.ArgumentParser(description="Log monitoring and processing")
+    parser.add_argument(
+        "--root_dir", type=str, default="users", help="Path to the root dir"
+    )
+    parser.add_argument(
+        "--models_dir",
+        type=str,
+        default="models",
+        help="Path to the classification models",
+    )
     args = parser.parse_args()
 
     # Подключение логера
@@ -35,6 +39,9 @@ if __name__ == '__main__':
     logger.info("Prediction starts")
     preproccessor = Preprocessor()
     predictor = Predictor(
-        scanner=scanner, preproccessor=preproccessor, models_dir=models_dir,
-        logger=logger)
+        scanner=scanner,
+        preproccessor=preproccessor,
+        models_dir=models_dir,
+        logger=logger,
+    )
     predictor.start()
