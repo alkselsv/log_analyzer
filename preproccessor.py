@@ -1,8 +1,8 @@
 """Определение класса Preprocessor"""
 from datetime import datetime
+import warnings
 import pandas as pd
 
-import warnings
 warnings.filterwarnings('ignore')
 
 

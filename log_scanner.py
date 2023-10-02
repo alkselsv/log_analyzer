@@ -6,11 +6,13 @@ import json
 class LogScanner:
     """Сканер логов"""
 
-    def __init__(self, root_dir="users"):
+    def __init__(self, root_dir="users", logger=None):
         self.root_dir = root_dir
+        self.logger = logger
         self.models = []
         self.min_bounds = []
         self.log_files = []
+        self.logger = logger
 
     def scan(self):
         """Выполняет поиск файлов settings.json и загружет из них настройки"""
@@ -31,6 +33,8 @@ class LogScanner:
                         log_file = os.path.join(site_dir, "logs", "sp.csv.log")
                         if os.path.isfile(log_file):
                             self.log_files.append(log_file)
+        self.logger.info(f"Found log files: {self.log_files}")
+        self.logger.info(f"Found model files: {self.models}")
 
     def get_models(self):
         """Возвращает список моделей"""
