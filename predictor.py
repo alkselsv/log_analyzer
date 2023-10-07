@@ -13,11 +13,12 @@ class Predictor:
     """Возвращает предсказания модели"""
 
     def __init__(
-        self, scanner=None, preproccessor=None, models_dir="models", logger=None
+        self, scanner=None, preproccessor=None, models_dir="models", period=60, logger=None
     ):
         self.scanner = scanner
         self.preproccessor = preproccessor
         self.models_dir = models_dir
+        self.period = period
         self.logger = logger
 
     def __predict__(self, model, log_file, min_bound):
@@ -65,7 +66,7 @@ class Predictor:
                         out_file, mode="a", index=False, header=False
                     )
 
-            time.sleep(20)
+            time.sleep(self.period)
 
     def __worker__(self, args):
         """Вспомогательная функция, которая разбирает аргументы"""

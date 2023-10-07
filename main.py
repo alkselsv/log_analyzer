@@ -18,6 +18,12 @@ if __name__ == "__main__":
         default="models",
         help="Path to the classification models",
     )
+    parser.add_argument(
+        "--period",
+        type=int,
+        default=60,
+        help="Log access period in seconds",
+    )
     args = parser.parse_args()
 
     # Подключение логера
@@ -27,6 +33,8 @@ if __name__ == "__main__":
     # Установка путей
     root_dir = args.root_dir
     models_dir = args.models_dir
+    # Определение периода
+    period = args.period
 
     logger.info(f"Root dir: {root_dir}")
     logger.info(f"Models dir: {models_dir}")
@@ -41,6 +49,7 @@ if __name__ == "__main__":
         scanner=scanner,
         preproccessor=preproccessor,
         models_dir=models_dir,
+        period=period,
         logger=logger,
     )
     predictor.start()
