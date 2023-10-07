@@ -1,7 +1,7 @@
 ## Запуск приложения
 
 ```bash
-python main.py --root_dir ./users --models_dir ./smodels
+python main.py --root_dir ./users --models_dir ./models
 
 Options
   -h, --help                show this help message and exit
