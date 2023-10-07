@@ -1,4 +1,5 @@
 """Определение класса Preprocessor"""
+import os
 from datetime import datetime
 import warnings
 import pandas as pd
@@ -9,7 +10,10 @@ warnings.filterwarnings("ignore")
 class Preprocessor:
     """Предобработчик данных"""
 
-    def __init__(self):
+    def __init__(self, logger=None):
+
+        self.logger = logger
+
         # Имена всех признаков
         self.columns = [
             "type",
@@ -60,23 +64,27 @@ class Preprocessor:
             "metrik.action",
         ]
 
-        self.last_predicts_timestampts = {}
+        self.last_file_positions = {}
+        self.last_file_sizes = {}
 
     def __read_data__(self, file):
         """Загружает данные в DataFrame pandas"""
 
-        dataframe = pd.read_csv(file, sep=";", names=self.columns, on_bad_lines="skip")
-        timestamp = self.last_predicts_timestampts.get(file, datetime(2023, 1, 1))
-        dataframe["datetime"] = pd.to_datetime(dataframe["date"])
-        dataframe = dataframe[
-            (dataframe["datetime"] > timestamp) & (dataframe["type"] == "METRIK")
-        ]  # Оставляет только новые данные
-        # Сохраняет метку даты последней строки
-        if len(dataframe):
-            self.last_predicts_timestampts[file] = dataframe.iloc[-1][
-                "datetime"
-            ].to_pydatetime()
-        return dataframe
+        with open(file, 'r') as f:
+            current_file_size = os.path.getsize(file)
+            last_file_position = self.last_file_positions.get(file, 0)
+            if current_file_size < self.last_file_sizes.get(file, 0):
+                last_file_position = 0
+                self.last_file_positions[file] = 0
+            self.last_file_sizes[file] = current_file_size
+            f.seek(last_file_position)
+            dataframe = pd.read_csv(f, sep=";", names=self.columns, on_bad_lines="skip")
+            self.last_file_positions[file] = f.tell()
+            dataframe["datetime"] = pd.to_datetime(dataframe["date"])
+            dataframe = dataframe[dataframe["type"]
+                                  == "METRIK"]  # Оставляет строки с метрикой
+            self.logger.debug(f"New records for predictions: {len(dataframe)}")
+            return dataframe
 
     def __make_group__(self, dataframe):
         """Выполняет операцию группирования по двум столбцам session и time_round"""

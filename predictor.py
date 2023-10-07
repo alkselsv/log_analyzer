@@ -34,20 +34,20 @@ class Predictor:
                 sessions,
                 user_agents,
             ) = self.preproccessor.proccess_data(log_file)
-            df_out = pd.DataFrame(columns=["timestamp", "ip_addr", "prob", "session"])
-            df_out["timestamp"] = timestamps
-            df_out["ip_addr"] = ip_addrs
-            df_out["session"] = sessions
-            df_out["user_agent"] = user_agents
 
-            self.logger.debug(f"Prepared data for predictions: {len(data)}")
-
-            if model is not None and len(data):
+            if len(data):
+                self.logger.debug(f"Prepared records for predictions: {len(data)}")
                 try:
                     predictions = model.predict_proba(data)[:, 1]
                     self.logger.debug("Prediction made")
                 except Exception as e:
                     self.logger.error(f"Prediction error: {e}")
+
+                df_out = pd.DataFrame(columns=["timestamp", "ip_addr", "prob", "session"])
+                df_out["timestamp"] = timestamps
+                df_out["ip_addr"] = ip_addrs
+                df_out["session"] = sessions
+                df_out["user_agent"] = user_agents
                 df_out["prob"] = np.round(predictions, 2)
 
                 # Для тестирования
@@ -58,7 +58,7 @@ class Predictor:
                 # ]
 
                 df_out_filtered = df_out[df_out["prob"] > min_bound]
-                self.logger.debug(f"Prediction results: {len(df_out_filtered )}")
+                self.logger.debug(f"Predicted bots: {len(df_out_filtered )}")
 
                 if len(df_out_filtered) > 0:
                     out_file = os.path.join(os.path.dirname(log_file), "out.csv.log")
