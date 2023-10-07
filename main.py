@@ -36,7 +36,6 @@ if __name__ == "__main__":
     scanner.scan()
     logger.info("Log scanning ends")
 
-    logger.info("Prediction starts")
     preproccessor = Preprocessor()
     predictor = Predictor(
         scanner=scanner,

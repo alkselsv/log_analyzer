@@ -23,6 +23,8 @@ class Predictor:
     def __predict__(self, model, log_file, min_bound):
         """Выполняет предсказание"""
 
+        self.logger.info("Prediction process starts")
+
         while True:
             (
                 data,
@@ -40,9 +42,11 @@ class Predictor:
             self.logger.debug(f"Prepared data for predictions: {len(data)}")
 
             if model is not None and len(data):
-                self.logger.debug("Prediction starts")
-                predictions = model.predict_proba(data)[:, 1]
-                self.logger.debug("Prediction ends")
+                try:
+                    predictions = model.predict_proba(data)[:, 1]
+                    self.logger.debug("Prediction made")
+                except Exception as e:
+                    self.logger.error(f"Prediction error: {e}")
                 df_out["prob"] = np.round(predictions, 2)
 
                 # Для тестирования
