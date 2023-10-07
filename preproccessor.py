@@ -36,6 +36,8 @@ class Preprocessor:
             "metrik.language",
             "metrik.isMobile",
             "metrik.platform",
+            "location",
+            "tls_handhshake_digest"
         ]
 
         # Правила агрегации признаков (имя признака : агрегация)
